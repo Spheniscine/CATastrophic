@@ -10,18 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.catastrophic.R
+import com.example.catastrophic.databinding.ItemImageBinding
 
 class GridAdapter(fragment: Fragment, val drawables: List<Drawable>): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
 
     val requestManager = Glide.with(fragment)
 
 
-    inner class ImageViewHolder(itemView: View):
+    inner class ImageViewHolder(itemView: View, val binding: ItemImageBinding):
         RecyclerView.ViewHolder(itemView) {
-
-        val imageView = itemView.findViewById<ImageView>(R.id.item_image) ?:
-            error("ImageViewHolder requires inner ImageView with item_image id")
-        // TODO: on click listener
 
         fun onBind() {
             setImage()
@@ -30,14 +27,14 @@ class GridAdapter(fragment: Fragment, val drawables: List<Drawable>): RecyclerVi
         fun setImage() {
             requestManager
                 .load(drawables[adapterPosition])
-                .into(imageView)
+                .into(binding.itemImage)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_image, parent, false)
-        return ImageViewHolder(view)
+        val binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val view = binding.root
+        return ImageViewHolder(view, binding)
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {

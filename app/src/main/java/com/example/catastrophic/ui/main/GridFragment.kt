@@ -10,6 +10,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.example.catastrophic.R
 import com.example.catastrophic.adapter.GridAdapter
 import com.example.catastrophic.databinding.FragmentGridBinding
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class GridFragment : Fragment() {
 
@@ -22,7 +23,7 @@ class GridFragment : Fragment() {
 // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: MainViewModel
+    private val mainViewModel: MainViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,12 +36,10 @@ class GridFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.recyclerView.adapter = GridAdapter(this, List(18) {
-            AppCompatResources.getDrawable(requireContext(), R.drawable.cat_api_example_0)!!
-        })
-
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
+        val cats = mainViewModel.getCats().map {
+            it.reify(requireContext())!!
+        }
+        binding.recyclerView.adapter = GridAdapter(this, cats)
     }
 
     override fun onDestroyView() {

@@ -2,6 +2,8 @@ package com.example.catastrophic
 
 import android.app.Application
 import android.content.Context
+import com.example.catastrophic.repository.CatApiRepository
+import com.example.catastrophic.repository.MockCatApiRepository
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -15,7 +17,9 @@ class App: Application() {
         single<Application> { app }
         single<Context> { app }
 
-        viewModel { MainViewModel() }
+        single<CatApiRepository> { MockCatApiRepository() /* TODO: change */ }
+
+        viewModel { MainViewModel(get()) }
     }
 
     override fun onCreate() {

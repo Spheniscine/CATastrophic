@@ -1,5 +1,6 @@
 package com.example.catastrophic.ui.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,14 @@ import com.bumptech.glide.Glide
 import com.example.catastrophic.databinding.ItemImageBinding
 
 /** A RecyclerView adapter for displaying a grid of images. */
-class GridAdapter(fragment: Fragment, val drawables: List<Drawable>): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
+class GridAdapter(fragment: Fragment): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
+
+    var urls: List<String> = emptyList()
+    @SuppressLint("NotifyDataSetChanged")
+    set(value) {
+        field = value
+        notifyDataSetChanged()
+    }
 
     val requestManager = Glide.with(fragment)
 
@@ -24,7 +32,7 @@ class GridAdapter(fragment: Fragment, val drawables: List<Drawable>): RecyclerVi
 
         fun setImage() {
             requestManager
-                .load(drawables[adapterPosition])
+                .load(urls[adapterPosition])
                 .into(binding.itemImage)
         }
     }
@@ -40,6 +48,6 @@ class GridAdapter(fragment: Fragment, val drawables: List<Drawable>): RecyclerVi
     }
 
     override fun getItemCount(): Int {
-        return drawables.size
+        return urls.size
     }
 }

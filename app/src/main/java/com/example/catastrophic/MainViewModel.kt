@@ -1,4 +1,4 @@
-package com.example.catastrophic.ui.main
+package com.example.catastrophic
 
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModel

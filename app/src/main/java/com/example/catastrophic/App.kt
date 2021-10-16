@@ -2,7 +2,6 @@ package com.example.catastrophic
 
 import android.app.Application
 import android.content.Context
-import com.example.catastrophic.ui.main.MainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module

@@ -7,7 +7,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.example.catastrophic.R
 
 /**
- * Interface for values that need an Android context to "reify" to a more usable value, e.g. resource ids
+ * Interface for values that need an Android context to "reify" to a more concrete value, e.g. resource ids
  * This is useful for emitting from or passing around among viewmodels, for better unit-testability
  */
 interface ContextValue<T> {

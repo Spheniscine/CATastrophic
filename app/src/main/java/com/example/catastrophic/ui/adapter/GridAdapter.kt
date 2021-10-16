@@ -1,17 +1,15 @@
-package com.example.catastrophic.adapter
+package com.example.catastrophic.ui.adapter
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.example.catastrophic.R
 import com.example.catastrophic.databinding.ItemImageBinding
 
+/** A RecyclerView adapter for displaying a grid of images. */
 class GridAdapter(fragment: Fragment, val drawables: List<Drawable>): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
 
     val requestManager = Glide.with(fragment)

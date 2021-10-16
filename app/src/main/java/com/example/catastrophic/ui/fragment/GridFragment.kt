@@ -1,17 +1,16 @@
-package com.example.catastrophic.ui.main
+package com.example.catastrophic.ui.fragment
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
-import com.example.catastrophic.R
-import com.example.catastrophic.adapter.GridAdapter
+import com.example.catastrophic.MainViewModel
+import com.example.catastrophic.ui.adapter.GridAdapter
 import com.example.catastrophic.databinding.FragmentGridBinding
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/** A fragment for displying a grid of images. */
 class GridFragment : Fragment() {
 
     companion object {

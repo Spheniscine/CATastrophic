@@ -1,4 +1,4 @@
-package com.example.catastrophic.ui.main
+package com.example.catastrophic.ui.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.catastrophic.R
 
+/** TODO: A fragment for displying an image. */
 class ImageFragment : Fragment() {
 
     override fun onCreateView(

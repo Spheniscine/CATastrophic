@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".ui.main.GridFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -12,9 +13,8 @@
         android:scrollbarStyle="outsideOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
         android:scrollbars="vertical"
+        android:padding="1dp"
         app:layoutManager="GridLayoutManager"
         app:spanCount="3"/>
 

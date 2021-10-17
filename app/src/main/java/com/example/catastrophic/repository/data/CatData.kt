@@ -1,5 +1,7 @@
 package com.example.catastrophic.repository.data
 
+import com.squareup.moshi.Json
+
 data class CatData(
-    val url: String
+    @field:Json(name = "url") val url: String
 )

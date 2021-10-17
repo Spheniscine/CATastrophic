@@ -7,12 +7,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.example.catastrophic.R
 import com.example.catastrophic.databinding.ItemImageBinding
 import com.example.catastrophic.utils.dp
@@ -41,10 +47,6 @@ class GridAdapter(val fragment: Fragment): RecyclerView.Adapter<GridAdapter.Imag
         }
     }
 
-    fun errorDrawable(): Drawable {
-        return AppCompatResources.getDrawable(context, R.drawable.ic_error) ?: error("Can't load error drawable")
-     }
-
 
     inner class ImageViewHolder(itemView: View, val binding: ItemImageBinding):
         RecyclerView.ViewHolder(itemView) {
@@ -57,7 +59,29 @@ class GridAdapter(val fragment: Fragment): RecyclerView.Adapter<GridAdapter.Imag
             requestManager
                 .load(urls[adapterPosition])
                 .placeholder(loadingDrawable())
-                .error(errorDrawable())
+                .error(R.drawable.ic_baseline_error_36)
+                .listener(object: RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.itemImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+
+                })
                 .into(binding.itemImage)
         }
     }

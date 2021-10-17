@@ -26,7 +26,7 @@ class MockCatApiRepository: CatApiRepository {
             CatData(url = "https://cdn2.thecatapi.com/images/mAGfq3LKj.png"),
             CatData(url = "https://cdn2.thecatapi.com/images/2IpZYS6fW.png"),
             CatData(url = "https://cdn2.thecatapi.com/images/drM-F4x01.png"),
-            CatData(url = "https://cdn2.thecatapi.com/images/ZtLOqf_S5.png"),
+            CatData(url = "https://example.com/dontexist.png"),
             CatData(url = "https://cdn2.thecatapi.com/images/qg0_IodJp.png"),
         )
     }

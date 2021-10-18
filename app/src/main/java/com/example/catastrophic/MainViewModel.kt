@@ -14,10 +14,11 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val catApiRepository: CatApiRepository) : ViewModel() {
 
-    private val _currentPosition = MutableLiveData<Int>(0)
-    val currentPositionLD: LiveData<Int> get() = _currentPosition
-    var currentPosition get() = _currentPosition.value ?: 0
-        set(value) { _currentPosition.setValue(value) }
+//    private val _currentPosition = MutableLiveData<Int>(0)
+//    val currentPositionLD: LiveData<Int> get() = _currentPosition
+//    var currentPosition get() = _currentPosition.value ?: 0
+//        set(value) { _currentPosition.value = value }
+    var currentPosition = 0
 
     private val _catData = MutableLiveData<List<CatData>?>()
     val catData: LiveData<List<CatData>?> get() = _catData

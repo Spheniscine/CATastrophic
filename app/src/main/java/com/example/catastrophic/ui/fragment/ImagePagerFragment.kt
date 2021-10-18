@@ -1,60 +1,81 @@
 package com.example.catastrophic.ui.fragment
 
 import android.os.Bundle
+import androidx.transition.TransitionInflater
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.SharedElementCallback
+import androidx.viewpager2.widget.ViewPager2
+import com.example.catastrophic.MainViewModel
 import com.example.catastrophic.R
+import com.example.catastrophic.databinding.FragmentImageBinding
+import com.example.catastrophic.databinding.FragmentImagePagerBinding
+import com.example.catastrophic.ui.adapter.ImagePagerAdapter
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ImagePagerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ImagePagerFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentImagePagerBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
+    private val mainViewModel: MainViewModel by sharedViewModel()
+
+    private val adapter by lazy { ImagePagerAdapter(this, mainViewModel.catData.value.orEmpty()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_image_pager, container, false)
+        _binding = FragmentImagePagerBinding.inflate(inflater, container, false)
+
+        val viewPager = binding.viewPager
+        viewPager.adapter = adapter
+        viewPager.currentItem = mainViewModel.currentPosition
+        viewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                mainViewModel.currentPosition = position
+            }
+        })
+
+        prepareSharedElementTransition()
+
+        // Avoid a postponeEnterTransition on orientation change, and postpone only of first creation.
+        if (savedInstanceState == null) {
+            postponeEnterTransition()
+        }
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ImagePagerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ImagePagerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun prepareSharedElementTransition() {
+        val transition =
+            TransitionInflater.from(requireContext())
+                .inflateTransition(R.transition.image_shared_element_transition)
+        sharedElementEnterTransition = transition
+
+        setEnterSharedElementCallback(object: SharedElementCallback() {
+            override fun onMapSharedElements(
+                names: MutableList<String>,
+                sharedElements: MutableMap<String, View>
+            ) {
+                super.onMapSharedElements(names, sharedElements)
+                val currentFragment = adapter.createFragment(mainViewModel.currentPosition)
+                val view = currentFragment.view ?: return
+                sharedElements[names[0]] = view.findViewById(R.id.item_image)
             }
+        })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

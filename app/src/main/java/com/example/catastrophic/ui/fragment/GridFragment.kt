@@ -25,7 +25,7 @@ class GridFragment : Fragment() {
 
     private var _binding: FragmentGridBinding? = null
     // This property is only valid between onCreateView and
-// onDestroyView.
+    // onDestroyView.
     private val binding get() = _binding!!
 
     private val mainViewModel: MainViewModel by sharedViewModel()

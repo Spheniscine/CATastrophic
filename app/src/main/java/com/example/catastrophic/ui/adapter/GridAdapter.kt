@@ -24,7 +24,9 @@ import com.example.catastrophic.R
 import com.example.catastrophic.databinding.ItemImageBinding
 import com.example.catastrophic.ui.fragment.ImagePagerFragment
 import com.example.catastrophic.utils.dp
+import com.example.catastrophic.utils.loadingDrawable
 import com.example.catastrophic.utils.scaledDrawable
+import com.example.catastrophic.utils.transitionId
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 import kotlin.reflect.KMutableProperty0
@@ -69,15 +71,6 @@ class GridAdapter(val fragment: Fragment, val currentPosition: KMutableProperty0
         }
     }
 
-    fun loadingDrawable(): Drawable {
-        return CircularProgressDrawable(context).apply {
-            strokeWidth = 5f
-            centerRadius = 30f
-            setColorSchemeColors(0xffcccccc.toInt())
-            start()
-        }
-    }
-
 
     inner class ImageViewHolder(itemView: View,
                                 val image: ImageView,
@@ -99,13 +92,13 @@ class GridAdapter(val fragment: Fragment, val currentPosition: KMutableProperty0
         fun onBind() {
             //if (adapterPosition >= urls.size) return
             setImage()
-            image.transitionName = urls[adapterPosition]
+            image.transitionName = transitionId(adapterPosition)
         }
 
         fun setImage() {
             requestManager
                 .load(urls[adapterPosition])
-                .placeholder(loadingDrawable())
+                .placeholder(loadingDrawable(context))
                 .error(R.drawable.ic_baseline_error_36)
                 .listener(object: RequestListener<Drawable> {
                     override fun onLoadFailed(

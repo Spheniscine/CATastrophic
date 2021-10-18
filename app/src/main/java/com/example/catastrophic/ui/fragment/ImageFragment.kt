@@ -21,7 +21,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 /** TODO: A fragment for displying an image. */
 class ImageFragment : Fragment() {
 
-    var transitionId = ""
     var imageUrl = ""
 
     private var _binding: FragmentImageBinding? = null
@@ -49,11 +48,6 @@ class ImageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentImageBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         val args = requireArguments()
         binding.image.transitionName = args.getString(KEY_TRANSITION_ID)!!
@@ -87,6 +81,8 @@ class ImageFragment : Fragment() {
 
             })
             .into(binding.image)
+
+        return binding.root
     }
 
     override fun onDestroyView() {

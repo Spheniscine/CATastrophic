@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.SharedElementCallback
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.catastrophic.MainViewModel
 import com.example.catastrophic.R
@@ -38,7 +39,7 @@ class ImagePagerFragment : Fragment() {
         val viewPager = binding.viewPager
         viewPager.adapter = adapter
         viewPager.currentItem = mainViewModel.currentPosition
-        viewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+        viewPager.addOnPageChangeListener(object: ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 mainViewModel.currentPosition = position
@@ -67,9 +68,10 @@ class ImagePagerFragment : Fragment() {
                 sharedElements: MutableMap<String, View>
             ) {
                 super.onMapSharedElements(names, sharedElements)
-                val currentFragment = adapter.createFragment(mainViewModel.currentPosition)
+                val currentFragment =
+                    adapter.instantiateItem(binding.viewPager, mainViewModel.currentPosition) as Fragment
                 val view = currentFragment.view ?: return
-                sharedElements[names[0]] = view.findViewById(R.id.item_image)
+                sharedElements[names[0]] = view.findViewById(R.id.image)
             }
         })
     }

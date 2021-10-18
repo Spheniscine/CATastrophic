@@ -61,7 +61,7 @@ class GridAdapter(val fragment: Fragment, val currentPosition: KMutableProperty0
             currentPosition.set(adapterPosition)
             (fragment.exitTransition as TransitionSet).excludeTarget(view, true)
             val transitioningView = imageView
-            fragment.parentFragmentManager
+            fragment.requireActivity().supportFragmentManager
                 .beginTransaction()
                 .setReorderingAllowed(true) // Optimize for shared element transition
                 .addSharedElement(transitioningView, transitioningView.transitionName)

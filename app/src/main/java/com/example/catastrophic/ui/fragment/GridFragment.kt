@@ -37,11 +37,7 @@ class GridFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentGridBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         binding.recyclerView.adapter = gridAdapter
 
         prepareTransitions()
@@ -52,6 +48,11 @@ class GridFragment : Fragment() {
             //Log.d("GridFragment", "urls: ${gridAdapter.urls}")
         }
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         scrollToPosition()
     }
 

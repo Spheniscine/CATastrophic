@@ -1,9 +1,17 @@
 package com.example.catastrophic.repository
 
 import com.example.catastrophic.repository.data.CatData
+import com.example.catastrophic.repository.source.CatApiService
 
 interface CatApiRepository {
     suspend fun getCatData(): List<CatData>
+}
+
+class CatApiRepositoryImpl(private val service: CatApiService): CatApiRepository {
+    override suspend fun getCatData(): List<CatData> {
+        val response = service.getCats(21, 1)
+        return response.body().orEmpty()
+    }
 }
 
 //TODO: Move to tests

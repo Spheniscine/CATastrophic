@@ -1,5 +1,6 @@
 package com.example.catastrophic.repository.source
 
+import com.example.catastrophic.BuildConfig
 import com.example.catastrophic.repository.data.CatData
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -9,6 +10,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Query
 
 
@@ -32,6 +34,7 @@ interface CatApiService {
         }
     }
 
+    @Headers("x-api-key: ${BuildConfig.CAT_API_KEY}")
     @GET("images/search")
     suspend fun getCats(
         @Query("limit") limit: Int,

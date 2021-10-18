@@ -90,6 +90,12 @@ class GridAdapter(val fragment: Fragment, val currentPosition: KMutableProperty0
             }
         }
 
+        /**
+         * Binds this view holder to the given adapter position.
+         *
+         * The binding will load the image into the image view, as well as set its transition name for
+         * later.
+         */
         fun onBind() {
             //if (adapterPosition >= urls.size) return
             setImage()

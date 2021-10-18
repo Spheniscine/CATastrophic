@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, GridFragment.newInstance(), GridFragment::class.simpleName)
+                .add(R.id.container, GridFragment.newInstance(), GridFragment::class.simpleName)
                 .commit()
         }
     }

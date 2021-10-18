@@ -40,13 +40,13 @@ class GridFragment : Fragment() {
 
         binding.recyclerView.adapter = gridAdapter
 
-        prepareTransitions()
-        //postponeEnterTransition() // TODO: this transition isn't working right
-
         mainViewModel.catData.observe(viewLifecycleOwner) { cats ->
             gridAdapter.urls = cats.orEmpty().map { it.url }
             //Log.d("GridFragment", "urls: ${gridAdapter.urls}")
         }
+
+        prepareTransitions()
+        //postponeEnterTransition() // TODO: this transition isn't working right
 
         return binding.root
     }

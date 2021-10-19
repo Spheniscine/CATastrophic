@@ -63,6 +63,7 @@ class ImageFragment : Fragment() {
         position = args.getInt(KEY_POSITION)
 
         lifecycleScope.launch {
+            binding.image.scaleType = ImageView.ScaleType.FIT_CENTER
             Glide.with(this@ImageFragment).load(loadingDrawable(requireContext())).into(binding.image)
             val catData = catProvider.getCatData(position)
 

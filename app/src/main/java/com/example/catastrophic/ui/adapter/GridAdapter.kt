@@ -106,6 +106,7 @@ class GridAdapter(val fragment: Fragment, private val catProvider: CatProvider, 
 
         fun setImage() {
             coroutineScope.launch {
+                image.scaleType = ImageView.ScaleType.CENTER_CROP
                 requestManager.load(loadingDrawable(context)).into(image)
                 val catData = catProvider.getCatData(adapterPosition)
                 requestManager.load(catData?.url)

@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.example.catastrophic.MainViewModel
 import com.example.catastrophic.R
 import com.example.catastrophic.databinding.ItemImageBinding
 import com.example.catastrophic.repository.CatProvider
@@ -37,7 +38,7 @@ import kotlin.math.roundToInt
 import kotlin.reflect.KMutableProperty0
 
 /** A RecyclerView adapter for displaying a grid of images. */
-class GridAdapter(val fragment: Fragment, private val catProvider: CatProvider, val currentPosition: KMutableProperty0<Int>): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
+class GridAdapter(private val fragment: Fragment, private val mainViewModel: MainViewModel): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
 
     private lateinit var coroutineScope: CoroutineScope
 
@@ -61,13 +62,14 @@ class GridAdapter(val fragment: Fragment, private val catProvider: CatProvider, 
         val enterTransitionStarted = AtomicBoolean()
 
         override fun onLoadCompleted(imageView: ImageView, adapterPosition: Int) {
-            if(currentPosition.get() != adapterPosition) return
+            if(mainViewModel.currentPosition != adapterPosition) return
             if(enterTransitionStarted.getAndSet(true)) return
             fragment.startPostponedEnterTransition()
         }
 
         override fun onItemClicked(view: View, imageView: ImageView, adapterPosition: Int) {
-            currentPosition.set(adapterPosition)
+            mainViewModel.currentPosition = adapterPosition
+            mainViewModel.shouldScroll = true
             (fragment.exitTransition as TransitionSet).excludeTarget(view, true)
             val transitioningView = imageView
             fragment.requireActivity().supportFragmentManager
@@ -108,7 +110,7 @@ class GridAdapter(val fragment: Fragment, private val catProvider: CatProvider, 
             coroutineScope.launch {
                 image.scaleType = ImageView.ScaleType.CENTER_CROP
                 requestManager.load(loadingDrawable(context)).into(image)
-                val catData = catProvider.getCatData(adapterPosition)
+                val catData = mainViewModel.getCatData(adapterPosition)
                 requestManager.load(catData?.url)
                     .placeholder(loadingDrawable(context))
                     .error(R.drawable.ic_baseline_error_36)
@@ -152,6 +154,6 @@ class GridAdapter(val fragment: Fragment, private val catProvider: CatProvider, 
     }
 
     override fun getItemCount(): Int {
-        return catProvider.numCats
+        return mainViewModel.numCats
     }
 }

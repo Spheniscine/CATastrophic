@@ -16,4 +16,5 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val catRepository: CatRepository) : ViewModel(), CatProvider by catRepository {
 
     var currentPosition = 0
+    var shouldScroll = false
 }

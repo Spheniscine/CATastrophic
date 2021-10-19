@@ -30,7 +30,7 @@ class GridFragment : Fragment() {
 
     private val mainViewModel: MainViewModel by sharedViewModel()
 
-    private val gridAdapter by lazy { GridAdapter(this, mainViewModel::currentPosition) }
+    private val gridAdapter by lazy { GridAdapter(this, mainViewModel, mainViewModel::currentPosition) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +39,6 @@ class GridFragment : Fragment() {
         _binding = FragmentGridBinding.inflate(inflater, container, false)
 
         binding.recyclerView.adapter = gridAdapter
-
-        mainViewModel.catData.observe(viewLifecycleOwner) { cats ->
-            gridAdapter.urls = cats.orEmpty().map { it.url }
-            //Log.d("GridFragment", "urls: ${gridAdapter.urls}")
-        }
 
         prepareTransitions()
         //postponeEnterTransition() // TODO: this transition isn't working right

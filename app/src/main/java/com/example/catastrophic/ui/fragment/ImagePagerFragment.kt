@@ -24,7 +24,7 @@ class ImagePagerFragment : Fragment() {
 
     private val mainViewModel: MainViewModel by sharedViewModel()
 
-    private val adapter by lazy { ImagePagerAdapter(this, mainViewModel.catData.value.orEmpty()) }
+    private val adapter by lazy { ImagePagerAdapter(this, mainViewModel) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

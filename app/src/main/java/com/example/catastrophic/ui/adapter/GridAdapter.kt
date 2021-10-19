@@ -22,28 +22,37 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.example.catastrophic.R
 import com.example.catastrophic.databinding.ItemImageBinding
+import com.example.catastrophic.repository.CatProvider
 import com.example.catastrophic.ui.fragment.ImagePagerFragment
 import com.example.catastrophic.utils.dp
 import com.example.catastrophic.utils.loadingDrawable
 import com.example.catastrophic.utils.scaledDrawable
 import com.example.catastrophic.utils.transitionId
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 import kotlin.reflect.KMutableProperty0
 
 /** A RecyclerView adapter for displaying a grid of images. */
-class GridAdapter(val fragment: Fragment, val currentPosition: KMutableProperty0<Int>): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
+class GridAdapter(val fragment: Fragment, private val catProvider: CatProvider, val currentPosition: KMutableProperty0<Int>): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
+
+    private lateinit var coroutineScope: CoroutineScope
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        coroutineScope = MainScope()
+    }
+
+    // note: should requests be canceled? Could that cause problems?
+//    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+//        coroutineScope.cancel()
+//    }
 
     interface ViewHolderListener {
         fun onLoadCompleted(imageView: ImageView, adapterPosition: Int)
         fun onItemClicked(view: View, imageView: ImageView, adapterPosition: Int)
-    }
-
-    var urls: List<String> = emptyList()
-    @SuppressLint("NotifyDataSetChanged")
-    set(value) {
-        field = value
-        notifyDataSetChanged()
     }
 
     val requestManager = Glide.with(fragment)
@@ -96,35 +105,38 @@ class GridAdapter(val fragment: Fragment, val currentPosition: KMutableProperty0
         }
 
         fun setImage() {
-            requestManager
-                .load(urls[adapterPosition])
-                .placeholder(loadingDrawable(context))
-                .error(R.drawable.ic_baseline_error_36)
-                .listener(object: RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        image.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                        viewHolderListener.onLoadCompleted(image, adapterPosition)
-                        return false
-                    }
+            coroutineScope.launch {
+                requestManager.load(loadingDrawable(context)).into(image)
+                val catData = catProvider.getCatData(adapterPosition)
+                requestManager.load(catData?.url)
+                    .placeholder(loadingDrawable(context))
+                    .error(R.drawable.ic_baseline_error_36)
+                    .listener(object: RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                            viewHolderListener.onLoadCompleted(image, adapterPosition)
+                            return false
+                        }
 
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        viewHolderListener.onLoadCompleted(image, adapterPosition)
-                        return false
-                    }
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            viewHolderListener.onLoadCompleted(image, adapterPosition)
+                            return false
+                        }
 
-                })
-                .into(image)
+                    })
+                    .into(image)
+            }
         }
     }
 
@@ -139,6 +151,6 @@ class GridAdapter(val fragment: Fragment, val currentPosition: KMutableProperty0
     }
 
     override fun getItemCount(): Int {
-        return urls.size
+        return catProvider.numCats
     }
 }

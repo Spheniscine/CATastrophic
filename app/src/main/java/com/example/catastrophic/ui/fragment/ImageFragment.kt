@@ -8,36 +8,44 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.catastrophic.MainViewModel
 import com.example.catastrophic.R
 import com.example.catastrophic.databinding.FragmentImageBinding
+import com.example.catastrophic.repository.CatProvider
 import com.example.catastrophic.utils.loadingDrawable
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /** TODO: A fragment for displying an image. */
 class ImageFragment : Fragment() {
 
-    var imageUrl = ""
+    //var imageUrl = ""
+    var position = 0
 
     private var _binding: FragmentImageBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
+    val catProvider: CatProvider by sharedViewModel<MainViewModel>()
+
     companion object {
         private const val KEY_TRANSITION_ID = "com.example.catastrophic.key.transitionId"
-        private const val KEY_IMAGE_URL = "com.example.catastrophic.key.imageUrl"
+        private const val KEY_POSITION = "com.example.catastrophic.key.position"
 
-        fun newInstance(transitionId: String, imageUrl: String): ImageFragment {
+        fun newInstance(transitionId: String, position: Int): ImageFragment {
             val fragment = ImageFragment()
 
             val args = Bundle()
             args.putString(KEY_TRANSITION_ID, transitionId)
-            args.putString(KEY_IMAGE_URL, imageUrl)
+            args.putInt(KEY_POSITION, position)
             fragment.arguments = args
             return fragment
         }
@@ -51,36 +59,45 @@ class ImageFragment : Fragment() {
 
         val args = requireArguments()
         binding.image.transitionName = args.getString(KEY_TRANSITION_ID)!!
-        imageUrl = args.getString(KEY_IMAGE_URL)!!
-        Glide.with(this)
-            .load(imageUrl)
-            .placeholder(loadingDrawable(requireContext()))
-            .error(R.drawable.ic_baseline_error_36)
-            .listener(object: RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    binding.image.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                    parentFragment?.startPostponedEnterTransition()
-                    return false
-                }
+        //imageUrl = args.getString(KEY_IMAGE_URL)!!
+        position = args.getInt(KEY_POSITION)
 
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    parentFragment?.startPostponedEnterTransition()
-                    return false
-                }
+        lifecycleScope.launch {
+            Glide.with(this@ImageFragment).load(loadingDrawable(requireContext())).into(binding.image)
+            val catData = catProvider.getCatData(position)
 
-            })
-            .into(binding.image)
+            Glide.with(this@ImageFragment)
+                .load(catData?.url)
+                .placeholder(loadingDrawable(requireContext()))
+                .error(R.drawable.ic_baseline_error_36)
+                .listener(object: RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.image.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                        parentFragment?.startPostponedEnterTransition()
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        parentFragment?.startPostponedEnterTransition()
+                        return false
+                    }
+
+                })
+                .into(binding.image)
+        }
+
+
 
         return binding.root
     }

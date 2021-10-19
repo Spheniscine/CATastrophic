@@ -41,7 +41,7 @@ class GridFragment : Fragment() {
         binding.recyclerView.adapter = gridAdapter
 
         prepareTransitions()
-        //postponeEnterTransition() // TODO: this transition isn't working right
+        postponeEnterTransition() // TODO: this transition isn't working right
 
         return binding.root
     }

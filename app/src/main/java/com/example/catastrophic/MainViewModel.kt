@@ -14,6 +14,6 @@ import com.example.catastrophic.utils.DrawableId
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val catRepository: CatRepository) : ViewModel(), CatProvider by catRepository {
-    
+
     var currentPosition = 0
 }

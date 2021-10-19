@@ -57,7 +57,7 @@ class GridAdapter(val fragment: Fragment, private val catProvider: CatProvider, 
 
     val requestManager = Glide.with(fragment)
     val context get() = fragment.requireContext()
-    val viewHolderListener = object : ViewHolderListener {
+    inner class ViewHolderListenerImpl : ViewHolderListener {
         val enterTransitionStarted = AtomicBoolean()
 
         override fun onLoadCompleted(imageView: ImageView, adapterPosition: Int) {
@@ -144,7 +144,7 @@ class GridAdapter(val fragment: Fragment, private val catProvider: CatProvider, 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val view = binding.root
-        return ImageViewHolder(view, binding.itemImage, viewHolderListener)
+        return ImageViewHolder(view, binding.itemImage, ViewHolderListenerImpl())
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {

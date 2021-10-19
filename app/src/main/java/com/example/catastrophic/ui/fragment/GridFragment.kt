@@ -89,7 +89,8 @@ class GridFragment : Fragment() {
     }
 
     private fun prepareTransitions() {
-        exitTransition = TransitionInflater.from(requireContext())
+        val context = context ?: return
+        exitTransition = TransitionInflater.from(context)
             .inflateTransition(R.transition.grid_exit_transition)
 
         setExitSharedElementCallback(

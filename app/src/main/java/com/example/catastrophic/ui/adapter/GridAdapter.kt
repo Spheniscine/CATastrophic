@@ -29,10 +29,7 @@ import com.example.catastrophic.utils.dp
 import com.example.catastrophic.utils.loadingDrawable
 import com.example.catastrophic.utils.scaledDrawable
 import com.example.catastrophic.utils.transitionId
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 import kotlin.reflect.KMutableProperty0
@@ -57,7 +54,6 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
     }
 
     val requestManager = Glide.with(fragment)
-    val context get() = fragment.requireContext()
     inner class ViewHolderListenerImpl : ViewHolderListener {
         val enterTransitionStarted = AtomicBoolean()
 
@@ -94,6 +90,8 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
             }
         }
 
+        private var job: Job? = null
+
         /**
          * Binds this view holder to the given adapter position.
          *
@@ -107,7 +105,9 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
         }
 
         fun setImage() {
-            coroutineScope.launch {
+            job?.cancel()
+            job = coroutineScope.launch {
+                val context = fragment.context ?: return@launch
                 image.scaleType = ImageView.ScaleType.CENTER_CROP
                 requestManager.load(loadingDrawable(context)).into(image)
                 val catData = mainViewModel.getCatData(adapterPosition)

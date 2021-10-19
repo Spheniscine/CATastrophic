@@ -57,8 +57,9 @@ class ImagePagerFragment : Fragment() {
     }
 
     private fun prepareSharedElementTransition() {
+        val context = context ?: return
         val transition =
-            TransitionInflater.from(requireContext())
+            TransitionInflater.from(context)
                 .inflateTransition(R.transition.image_shared_element_transition)
         sharedElementEnterTransition = transition
 

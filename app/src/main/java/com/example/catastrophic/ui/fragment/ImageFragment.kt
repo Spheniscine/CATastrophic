@@ -63,13 +63,14 @@ class ImageFragment : Fragment() {
         position = args.getInt(KEY_POSITION)
 
         lifecycleScope.launch {
+            val context = context ?: return@launch
             binding.image.scaleType = ImageView.ScaleType.FIT_CENTER
-            Glide.with(this@ImageFragment).load(loadingDrawable(requireContext())).into(binding.image)
+            Glide.with(this@ImageFragment).load(loadingDrawable(context)).into(binding.image)
             val catData = catProvider.getCatData(position)
 
             Glide.with(this@ImageFragment)
                 .load(catData?.url)
-                .placeholder(loadingDrawable(requireContext()))
+                .placeholder(loadingDrawable(context))
                 .error(R.drawable.ic_baseline_error_36)
                 .listener(object: RequestListener<Drawable> {
                     override fun onLoadFailed(

@@ -2,10 +2,7 @@ package com.example.catastrophic
 
 import android.app.Application
 import android.content.Context
-import com.example.catastrophic.repository.CatApiRepository
-import com.example.catastrophic.repository.CatApiRepositoryImpl
 import com.example.catastrophic.repository.CatRepository
-import com.example.catastrophic.repository.MockCatApiRepository
 import com.example.catastrophic.repository.source.CatApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -26,10 +23,6 @@ class App: Application() {
         single<Context> { app }
 
         single<CatApiService> { CatApiService.create() }
-//        single<CatApiRepository> {
-//            //MockCatApiRepository()
-//            CatApiRepositoryImpl(get())
-//        }
 
         single<CatRepository> { CatRepository(get()) }
 

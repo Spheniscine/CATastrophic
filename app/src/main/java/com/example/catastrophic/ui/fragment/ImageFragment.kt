@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-/** TODO: A fragment for displying an image. */
+/** A fragment for displying an image. */
 class ImageFragment : Fragment() {
 
     //var imageUrl = ""

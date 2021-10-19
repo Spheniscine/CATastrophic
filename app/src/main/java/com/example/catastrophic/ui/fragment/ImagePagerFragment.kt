@@ -33,7 +33,7 @@ class ImagePagerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentImagePagerBinding.inflate(inflater, container, false)
 
         val viewPager = binding.viewPager

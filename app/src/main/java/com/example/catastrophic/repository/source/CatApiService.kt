@@ -39,6 +39,6 @@ interface CatApiService {
     suspend fun getCats(
         @Query("limit") limit: Int,
         @Query("page") page: Int,
-        //@Query("mime_types") mimeTypes: String = "png",
+        @Query("mime_types") mimeTypes: String = "png,jpg",
         @Query("order") order: String = "Rand"): Response<List<CatData>>
 }

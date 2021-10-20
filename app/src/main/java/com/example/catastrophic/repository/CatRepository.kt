@@ -39,8 +39,7 @@ class CatRepository(private val apiService: CatApiService): CatProvider {
 
         val page = pages[pageNum].value.await()
 
-        return CatData("bad")
-        //return page?.get(position % PAGE_SIZE)
+        return page?.get(position % PAGE_SIZE)
     }
 
 }

@@ -25,7 +25,7 @@ class App: Application() {
         single<CatApiService> { CatApiService.create() }
 
         single<AppDatabase> {
-            Room.databaseBuilder(get(), AppDatabase::class.java, BuildConfig.APPLICATION_ID)
+            Room.databaseBuilder(get(), AppDatabase::class.java, "catastrophic")
                 .build()
         }
         single<CatPageDao> { get<AppDatabase>().catPageDao() }

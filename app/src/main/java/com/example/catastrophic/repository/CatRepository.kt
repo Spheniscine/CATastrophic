@@ -1,6 +1,7 @@
 package com.example.catastrophic.repository
 
 import com.example.catastrophic.repository.data.CatData
+import com.example.catastrophic.repository.data.CatDataPage
 import com.example.catastrophic.repository.data.ResponseError
 import com.example.catastrophic.repository.source.local.AppDatabase
 import com.example.catastrophic.repository.source.local.CatPageDao
@@ -35,7 +36,11 @@ class CatRepository(private val apiService: CatApiService, private val catPageDa
                     Timber.e("error fetching data: $it")
                 }
 
-                result.getOrNull()
+                val apiData = result.getOrNull()
+                if(apiData != null) {
+                    catPageDao.insert(CatDataPage(pageNum, apiData))
+                    apiData
+                } else catPageDao.loadSingle(pageNum)?.data
             }
         }
     }

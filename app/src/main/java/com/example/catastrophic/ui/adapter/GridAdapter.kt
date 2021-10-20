@@ -52,17 +52,17 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
         }
 
         override fun onItemClicked(view: View, imageView: ImageView, adapterPosition: Int) {
-            mainViewModel.currentPosition = adapterPosition
-            mainViewModel.shouldScroll = true
-            (fragment.exitTransition as TransitionSet).excludeTarget(view, true)
-            val transitioningView = imageView
-            fragment.requireActivity().supportFragmentManager
-                .beginTransaction()
-                .setReorderingAllowed(true) // Optimize for shared element transition
-                .addSharedElement(transitioningView, transitioningView.transitionName)
-                .replace(R.id.container, ImagePagerFragment(), ImagePagerFragment::class.simpleName)
-                .addToBackStack(null)
-                .commit()
+//            mainViewModel.currentPosition = adapterPosition
+//            mainViewModel.shouldScroll = true
+//            (fragment.exitTransition as TransitionSet).excludeTarget(view, true)
+//            val transitioningView = imageView
+//            fragment.requireActivity().supportFragmentManager
+//                .beginTransaction()
+//                .setReorderingAllowed(true) // Optimize for shared element transition
+//                .addSharedElement(transitioningView, transitioningView.transitionName)
+//                .replace(R.id.container, ImagePagerFragment(), ImagePagerFragment::class.simpleName)
+//                .addToBackStack(null)
+//                .commit()
         }
     }
 

@@ -7,6 +7,7 @@ import com.example.catastrophic.repository.data.CatData
 import com.example.catastrophic.repository.data.ResponseError
 import com.example.catastrophic.repository.source.CatApiService
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 
 interface CatProvider {
@@ -33,7 +34,7 @@ class CatRepository(private val apiService: CatApiService): CatProvider {
                 }
 
                 result.onFailure {
-                    Log.e("CatRepository", "error fetching data: $it")
+                    Timber.e("error fetching data: $it")
                 }
 
                 result.getOrNull()

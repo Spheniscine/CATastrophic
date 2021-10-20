@@ -16,8 +16,9 @@ interface CatProvider {
 class CatRepository(private val apiService: CatApiService): CatProvider {
     companion object {
         const val PAGE_SIZE = 20
+        const val ENDLESS_CATS = 300_000 // well, nearly so anyway
     }
-    override val numCats: Int = 300000
+    override val numCats: Int = ENDLESS_CATS
     private val coroutineScope = MainScope()
     private val pages = List(numCats / PAGE_SIZE) { pageNum ->
         lazy {

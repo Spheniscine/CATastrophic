@@ -1,38 +1,26 @@
 package com.example.catastrophic.ui.adapter
 
-import android.annotation.SuppressLint
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import androidx.transition.TransitionSet
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.example.catastrophic.MainViewModel
 import com.example.catastrophic.R
 import com.example.catastrophic.databinding.ItemImageBinding
-import com.example.catastrophic.repository.CatProvider
 import com.example.catastrophic.ui.fragment.ImagePagerFragment
-import com.example.catastrophic.utils.dp
 import com.example.catastrophic.utils.loadingDrawable
-import com.example.catastrophic.utils.scaledDrawable
 import com.example.catastrophic.utils.transitionId
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.math.roundToInt
-import kotlin.reflect.KMutableProperty0
 
 /** A RecyclerView adapter for displaying a grid of images. */
 class GridAdapter(private val fragment: Fragment, private val mainViewModel: MainViewModel): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
@@ -44,9 +32,9 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
     }
 
     // note: should requests be canceled? Could that cause problems?
-//    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-//        coroutineScope.cancel()
-//    }
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        coroutineScope.cancel()
+    }
 
     interface ViewHolderListener {
         fun onLoadCompleted(imageView: ImageView, adapterPosition: Int)
@@ -90,8 +78,6 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
             }
         }
 
-        private var job: Job? = null
-
         /**
          * Binds this view holder to the given adapter position.
          *
@@ -104,9 +90,10 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
             image.transitionName = transitionId(adapterPosition)
         }
 
+        private var setImageJob: Job? = null
         fun setImage() {
-            job?.cancel()
-            job = coroutineScope.launch {
+            setImageJob?.cancel()
+            setImageJob = coroutineScope.launch {
                 val context = fragment.context ?: return@launch
                 image.scaleType = ImageView.ScaleType.CENTER_CROP
                 requestManager.load(loadingDrawable(context)).into(image)

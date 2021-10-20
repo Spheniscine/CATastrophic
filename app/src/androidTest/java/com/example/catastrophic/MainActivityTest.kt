@@ -24,6 +24,10 @@ import org.junit.Test
 
 class MainActivityTest {
 
+    companion object {
+        const val OFFSCREEN_POSITION = 25
+    }
+
     @Rule
     @JvmField
     var activityScenarioRule = ActivityScenarioRule<MainActivity>(MainActivity::class.java)
@@ -66,12 +70,19 @@ class MainActivityTest {
             }
         }
 
+    // If this test fails on a device, MainActivityTest.OFFSCREEN_POSITION must be increased
+    @Test
+    fun OFFSCREEN_POSITION_is_really_offscreen() {
+        Espresso.onView(withId(R.id.recycler_view))
+            .check(matches(not(withViewAtPosition(OFFSCREEN_POSITION, isDisplayed()))))
+    }
+
     @Test
     fun scrolling_viewPager_affects_recyclerView_after_back() {
         Espresso.onView(withId(R.id.recycler_view))
             .perform(RecyclerViewActions.actionOnItemAtPosition<GridAdapter.ImageViewHolder>(0, click()))
 
-        repeat(25) {
+        repeat(OFFSCREEN_POSITION) {
             Espresso.onView(withId(R.id.view_pager))
                 .perform(swipeLeft())
         }
@@ -79,6 +90,6 @@ class MainActivityTest {
         Espresso.pressBack()
 
         Espresso.onView(withId(R.id.recycler_view))
-            .check(matches(withViewAtPosition(25, isDisplayed())))
+            .check(matches(withViewAtPosition(OFFSCREEN_POSITION, isDisplayed())))
     }
 }

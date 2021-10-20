@@ -1,4 +1,4 @@
-package com.example.catastrophic.repository.source
+package com.example.catastrophic.repository.source.remote
 
 import com.example.catastrophic.BuildConfig
 import com.example.catastrophic.repository.data.CatData

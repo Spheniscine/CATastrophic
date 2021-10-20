@@ -1,14 +1,10 @@
 package com.example.catastrophic.repository
 
-import android.util.Log
-import android.util.SparseArray
-import androidx.core.util.getOrElse
 import com.example.catastrophic.repository.data.CatData
 import com.example.catastrophic.repository.data.ResponseError
-import com.example.catastrophic.repository.source.CatApiService
+import com.example.catastrophic.repository.source.remote.CatApiService
 import kotlinx.coroutines.*
 import timber.log.Timber
-import java.util.concurrent.ConcurrentHashMap
 
 interface CatProvider {
     val numCats: Int

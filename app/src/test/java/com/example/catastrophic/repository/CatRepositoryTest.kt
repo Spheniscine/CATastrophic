@@ -1,17 +1,14 @@
 package com.example.catastrophic.repository
 
 import com.example.catastrophic.repository.data.CatData
-import com.example.catastrophic.repository.source.CatApiService
-import com.example.catastrophic.testutils.TestTree
+import com.example.catastrophic.repository.source.remote.CatApiService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
-import org.junit.BeforeClass
 import org.junit.Test
 import retrofit2.Response
-import timber.log.Timber
 import java.net.UnknownHostException
 
 class CatRepositoryTest {

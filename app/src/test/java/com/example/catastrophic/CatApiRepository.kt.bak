@@ -1,7 +1,7 @@
 package com.example.catastrophic.repository
 
 import com.example.catastrophic.repository.data.CatData
-import com.example.catastrophic.repository.source.CatApiService
+import com.example.catastrophic.repository.source.remote.CatApiService
 
 interface CatApiRepository {
     suspend fun getCatData(): List<CatData>

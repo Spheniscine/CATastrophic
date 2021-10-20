@@ -3,15 +3,11 @@ package com.example.catastrophic
 import android.app.Application
 import android.content.Context
 import com.example.catastrophic.repository.CatRepository
-import com.example.catastrophic.repository.source.CatApiService
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import com.example.catastrophic.repository.source.remote.CatApiService
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
 
 class App: Application() {

@@ -9,6 +9,7 @@ import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import retrofit2.Response
+import java.net.UnknownHostException
 
 class CatRepositoryTest {
 
@@ -67,6 +68,19 @@ class CatRepositoryTest {
 
             // assuming page size is 20, all calls should only query the API service once
             coVerify(exactly = 1) { apiService.getCats(any(), any()) }
+        }
+    }
+
+    /** Retrofit would throw UnknownHostException if Internet is not accessible */
+    @Test
+    fun `getCatData returns null if CatApiService throws`() {
+        val apiService: CatApiService = mockk()
+        coEvery { apiService.getCats(any(), any()) }.throws(UnknownHostException())
+        val repository = CatRepository(apiService)
+
+        runBlocking {
+            val data = repository.getCatData(0)
+            assertEquals(null, data)
         }
     }
 }

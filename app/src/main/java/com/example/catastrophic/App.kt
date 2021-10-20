@@ -2,7 +2,10 @@ package com.example.catastrophic
 
 import android.app.Application
 import android.content.Context
+import androidx.room.Room
 import com.example.catastrophic.repository.CatRepository
+import com.example.catastrophic.repository.source.local.AppDatabase
+import com.example.catastrophic.repository.source.local.CatPageDao
 import com.example.catastrophic.repository.source.remote.CatApiService
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
@@ -21,7 +24,13 @@ class App: Application() {
 
         single<CatApiService> { CatApiService.create() }
 
-        single<CatRepository> { CatRepository(get()) }
+        single<AppDatabase> {
+            Room.databaseBuilder(get(), AppDatabase::class.java, BuildConfig.APPLICATION_ID)
+                .build()
+        }
+        single<CatPageDao> { get<AppDatabase>().catPageDao() }
+
+        single<CatRepository> { CatRepository(get(), get()) }
 
         viewModel { MainViewModel(get()) }
     }

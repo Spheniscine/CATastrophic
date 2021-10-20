@@ -1,6 +1,8 @@
 package com.example.catastrophic.repository
 
 import com.example.catastrophic.repository.data.CatData
+import com.example.catastrophic.repository.data.CatDataPage
+import com.example.catastrophic.repository.source.local.CatPageDao
 import com.example.catastrophic.repository.source.remote.CatApiService
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,7 +30,7 @@ class CatRepositoryTest {
         val response = Response.success(List(pageSize) { catData })
         val apiService: CatApiService = mockk()
         coEvery { apiService.getCats(any(), any()) } returns response
-        val repository = CatRepository(apiService)
+        val repository = CatRepository(apiService, mockk(relaxUnitFun = true))
 
         runBlocking {
             val data = repository.getCatData(0)
@@ -41,7 +43,7 @@ class CatRepositoryTest {
         val response = Response.success(list)
         val apiService: CatApiService = mockk()
         coEvery { apiService.getCats(CatRepository.PAGE_SIZE, pageNum) } returns response
-        val repository = CatRepository(apiService)
+        val repository = CatRepository(apiService, mockk(relaxUnitFun = true))
 
         runBlocking {
             val data = repository.getCatData(position)
@@ -65,7 +67,7 @@ class CatRepositoryTest {
         val response = Response.success(List(pageSize) { catData })
         val apiService: CatApiService = mockk()
         coEvery { apiService.getCats(any(), any()) } returns response
-        val repository = CatRepository(apiService)
+        val repository = CatRepository(apiService, mockk(relaxUnitFun = true))
 
         runBlocking {
             repository.getCatData(0)
@@ -80,14 +82,50 @@ class CatRepositoryTest {
 
     /** Retrofit would throw UnknownHostException if Internet is not accessible */
     @Test
-    fun `getCatData returns null if CatApiService throws`() {
+    fun `getCatData falls back to local database if CatApiService throws`() {
+        val catData = CatData(url = "some_url")
+        val catPage = CatDataPage(0, List(pageSize) { catData })
+
         val apiService: CatApiService = mockk()
         coEvery { apiService.getCats(any(), any()) }.throws(UnknownHostException())
-        val repository = CatRepository(apiService)
+        val catPageDao: CatPageDao = mockk()
+        coEvery { catPageDao.loadSingle(0) } returns catPage
+        val repository = CatRepository(apiService, catPageDao)
 
         runBlocking {
             val data = repository.getCatData(0)
-            assertEquals(null, data)
+            assertEquals(catData, data)
         }
     }
+
+    @Test
+    fun `getCatData caches pages in local database`() {
+        val catData = CatData(url = "some_url")
+        val response = Response.success(List(pageSize) { catData })
+        val catPage = CatDataPage(0, List(pageSize) { catData })
+
+        val apiService: CatApiService = mockk()
+        coEvery { apiService.getCats(any(), any()) } returns response
+        val catPageDao: CatPageDao = mockk(relaxUnitFun = true)
+
+        val repository = CatRepository(apiService, catPageDao)
+
+        runBlocking {
+            repository.getCatData(0)
+            coVerify { catPageDao.insert(eq(catPage)) }
+        }
+    }
+
+//    /** Retrofit would throw UnknownHostException if Internet is not accessible */
+//    @Test
+//    fun `getCatData returns null if CatApiService throws`() {
+//        val apiService: CatApiService = mockk()
+//        coEvery { apiService.getCats(any(), any()) }.throws(UnknownHostException())
+//        val repository = CatRepository(apiService, mockk())
+//
+//        runBlocking {
+//            val data = repository.getCatData(0)
+//            assertEquals(null, data)
+//        }
+//    }
 }

@@ -14,6 +14,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.catastrophic.BuildConfig
 import com.example.catastrophic.MainViewModel
 import com.example.catastrophic.R
 import com.example.catastrophic.databinding.FragmentImageBinding
@@ -37,8 +38,8 @@ class ImageFragment : Fragment() {
     val catProvider: CatProvider by sharedViewModel<MainViewModel>()
 
     companion object {
-        private const val KEY_TRANSITION_ID = "com.example.catastrophic.key.transitionId"
-        private const val KEY_POSITION = "com.example.catastrophic.key.position"
+        private const val KEY_TRANSITION_ID = "${BuildConfig.APPLICATION_ID}.key.transitionId"
+        private const val KEY_POSITION = "${BuildConfig.APPLICATION_ID}.key.position"
 
         fun newInstance(transitionId: String, position: Int): ImageFragment {
             val fragment = ImageFragment()

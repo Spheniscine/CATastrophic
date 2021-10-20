@@ -2,6 +2,8 @@ package com.example.catastrophic.repository
 
 import com.example.catastrophic.repository.data.CatData
 import com.example.catastrophic.repository.data.ResponseError
+import com.example.catastrophic.repository.source.local.AppDatabase
+import com.example.catastrophic.repository.source.local.CatPageDao
 import com.example.catastrophic.repository.source.remote.CatApiService
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -11,7 +13,7 @@ interface CatProvider {
     suspend fun getCatData(position: Int): CatData?
 }
 
-class CatRepository(private val apiService: CatApiService): CatProvider {
+class CatRepository(private val apiService: CatApiService, private val catPageDao: CatPageDao): CatProvider {
     companion object {
         const val PAGE_SIZE = 20
         const val ENDLESS_CATS = 300_000 // well, nearly so anyway

@@ -22,7 +22,7 @@ class CatRepository(private val apiService: CatApiService): CatProvider {
     private val coroutineScope = MainScope()
     private val pages = List(numCats / PAGE_SIZE) { pageNum ->
         lazy {
-            coroutineScope.async {
+            coroutineScope.async(context = Dispatchers.IO) {
                 val response = apiService.getCats(PAGE_SIZE, pageNum + 1)
                 response.errorBody()?.let { body ->
                     Log.e("CatRepository", "error fetching data: $body")
@@ -39,7 +39,8 @@ class CatRepository(private val apiService: CatApiService): CatProvider {
 
         val page = pages[pageNum].value.await()
 
-        return page?.get(position % PAGE_SIZE)
+        return CatData("bad")
+        //return page?.get(position % PAGE_SIZE)
     }
 
 }

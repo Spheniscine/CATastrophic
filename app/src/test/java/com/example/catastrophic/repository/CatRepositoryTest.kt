@@ -43,6 +43,8 @@ class CatRepositoryTest {
 
     @Test
     fun `getCatData pages correctly`() {
+        // assuming page size is set to 20
+
         testPaging(0, 1, 0)
         testPaging(19, 1, 19)
         testPaging(20, 2, 0)
@@ -62,6 +64,8 @@ class CatRepositoryTest {
             repository.getCatData(1)
             repository.getCatData(2)
             repository.getCatData(0)
+
+            // assuming page size is 20, all calls should only query the API service once
             coVerify(exactly = 1) { apiService.getCats(any(), any()) }
         }
     }

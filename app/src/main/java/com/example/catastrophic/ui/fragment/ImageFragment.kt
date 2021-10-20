@@ -66,6 +66,7 @@ class ImageFragment : Fragment() {
             val context = context ?: return@launch
             binding.image.scaleType = ImageView.ScaleType.FIT_CENTER
             Glide.with(this@ImageFragment).load(loadingDrawable(context)).into(binding.image)
+            parentFragment?.startPostponedEnterTransition()
             val catData = catProvider.getCatData(position)
 
             Glide.with(this@ImageFragment)
@@ -80,7 +81,7 @@ class ImageFragment : Fragment() {
                         isFirstResource: Boolean
                     ): Boolean {
                         binding.image.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                        parentFragment?.startPostponedEnterTransition()
+                        //parentFragment?.startPostponedEnterTransition()
                         return false
                     }
 
@@ -91,7 +92,7 @@ class ImageFragment : Fragment() {
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        parentFragment?.startPostponedEnterTransition()
+                        //parentFragment?.startPostponedEnterTransition()
                         return false
                     }
 

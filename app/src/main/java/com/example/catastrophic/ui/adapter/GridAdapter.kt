@@ -37,7 +37,7 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
     }
 
     interface ViewHolderListener {
-        fun onLoadCompleted(imageView: ImageView, adapterPosition: Int)
+        fun setupTransition(imageView: ImageView, adapterPosition: Int)
         fun onItemClicked(view: View, imageView: ImageView, adapterPosition: Int)
     }
 
@@ -45,7 +45,7 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
     inner class ViewHolderListenerImpl : ViewHolderListener {
         val enterTransitionStarted = AtomicBoolean()
 
-        override fun onLoadCompleted(imageView: ImageView, adapterPosition: Int) {
+        override fun setupTransition(imageView: ImageView, adapterPosition: Int) {
             if(mainViewModel.currentPosition != adapterPosition) return
             if(enterTransitionStarted.getAndSet(true)) return
             fragment.startPostponedEnterTransition()
@@ -97,6 +97,7 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
                 val context = fragment.context ?: return@launch
                 image.scaleType = ImageView.ScaleType.CENTER_CROP
                 requestManager.load(loadingDrawable(context)).into(image)
+                viewHolderListener.setupTransition(image, adapterPosition)
                 val catData = mainViewModel.getCatData(adapterPosition)
                 requestManager.load(catData?.url)
                     .placeholder(loadingDrawable(context))
@@ -109,7 +110,6 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
                             isFirstResource: Boolean
                         ): Boolean {
                             image.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                            viewHolderListener.onLoadCompleted(image, adapterPosition)
                             return false
                         }
 
@@ -120,7 +120,6 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
                             dataSource: DataSource?,
                             isFirstResource: Boolean
                         ): Boolean {
-                            viewHolderListener.onLoadCompleted(image, adapterPosition)
                             return false
                         }
 

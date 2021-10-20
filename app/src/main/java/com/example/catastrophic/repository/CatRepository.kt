@@ -4,6 +4,7 @@ import android.util.Log
 import android.util.SparseArray
 import androidx.core.util.getOrElse
 import com.example.catastrophic.repository.data.CatData
+import com.example.catastrophic.repository.data.ResponseError
 import com.example.catastrophic.repository.source.CatApiService
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
@@ -23,12 +24,19 @@ class CatRepository(private val apiService: CatApiService): CatProvider {
     private val pages = List(numCats / PAGE_SIZE) { pageNum ->
         lazy {
             coroutineScope.async(context = Dispatchers.IO) {
-                val response = apiService.getCats(PAGE_SIZE, pageNum + 1)
-                response.errorBody()?.let { body ->
-                    Log.e("CatRepository", "error fetching data: $body")
-                    return@async null
+                val result = runCatching {
+                    val response = apiService.getCats(PAGE_SIZE, pageNum + 1)
+                    response.errorBody()?.use { body ->
+                        throw ResponseError(body.string())
+                    }
+                    response.body()!!
                 }
-                response.body()!!
+
+                result.onFailure {
+                    Log.e("CatRepository", "error fetching data: $it")
+                }
+
+                result.getOrNull()
             }
         }
     }

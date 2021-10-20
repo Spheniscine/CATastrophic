@@ -3,6 +3,7 @@ package com.example.catastrophic.repository
 import com.example.catastrophic.repository.data.CatData
 import com.example.catastrophic.repository.source.CatApiService
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
@@ -48,5 +49,20 @@ class CatRepositoryTest {
         testPaging(317, 16, 17)
     }
 
-    
+    @Test
+    fun `getCatData caches previous pages`() {
+        val catData = CatData(url = "some_url")
+        val response = Response.success(List(pageSize) { catData })
+        val apiService: CatApiService = mockk()
+        coEvery { apiService.getCats(any(), any()) } returns response
+        val repository = CatRepository(apiService)
+
+        runBlocking {
+            repository.getCatData(0)
+            repository.getCatData(1)
+            repository.getCatData(2)
+            repository.getCatData(0)
+            coVerify(exactly = 1) { apiService.getCats(any(), any()) }
+        }
+    }
 }

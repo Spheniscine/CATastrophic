@@ -18,12 +18,12 @@ class CatRepositoryTest {
 
     val pageSize = CatRepository.PAGE_SIZE
 
-    companion object {
-        @BeforeClass @JvmStatic
-        fun setup() {
-            Timber.plant(TestTree())
-        }
-    }
+//    companion object {
+//        @BeforeClass @JvmStatic
+//        fun setup() {
+//            Timber.plant(TestTree())
+//        }
+//    }
 
     @Test
     fun `getCatData returns data from CatApiService`() {

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.example.catastrophic.repository.CatRepository
+import com.example.catastrophic.repository.CatRepositoryImpl
 import com.example.catastrophic.repository.source.local.AppDatabase
 import com.example.catastrophic.repository.source.local.CatPageDao
 import com.example.catastrophic.repository.source.remote.CatApiService
@@ -30,7 +31,7 @@ class App: Application() {
         }
         single<CatPageDao> { get<AppDatabase>().catPageDao() }
 
-        single<CatRepository> { CatRepository(get(), get()) }
+        single<CatRepository> { CatRepositoryImpl(get(), get()) }
 
         viewModel { MainViewModel(get()) }
     }

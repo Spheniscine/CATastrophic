@@ -15,7 +15,7 @@ import java.net.UnknownHostException
 
 class CatRepositoryTest {
 
-    val pageSize = CatRepository.PAGE_SIZE
+    val pageSize = CatRepositoryImpl.PAGE_SIZE
 
 //    companion object {
 //        @BeforeClass @JvmStatic
@@ -30,7 +30,7 @@ class CatRepositoryTest {
         val response = Response.success(List(pageSize) { catData })
         val apiService: CatApiService = mockk()
         coEvery { apiService.getCats(any(), any()) } returns response
-        val repository = CatRepository(apiService, mockk(relaxUnitFun = true))
+        val repository = CatRepositoryImpl(apiService, mockk(relaxUnitFun = true))
 
         runBlocking {
             val data = repository.getCatData(0)
@@ -42,8 +42,8 @@ class CatRepositoryTest {
         val list = List(pageSize) { i -> CatData(url = "url_$i") }
         val response = Response.success(list)
         val apiService: CatApiService = mockk()
-        coEvery { apiService.getCats(CatRepository.PAGE_SIZE, pageNum) } returns response
-        val repository = CatRepository(apiService, mockk(relaxUnitFun = true))
+        coEvery { apiService.getCats(CatRepositoryImpl.PAGE_SIZE, pageNum) } returns response
+        val repository = CatRepositoryImpl(apiService, mockk(relaxUnitFun = true))
 
         runBlocking {
             val data = repository.getCatData(position)
@@ -67,7 +67,7 @@ class CatRepositoryTest {
         val response = Response.success(List(pageSize) { catData })
         val apiService: CatApiService = mockk()
         coEvery { apiService.getCats(any(), any()) } returns response
-        val repository = CatRepository(apiService, mockk(relaxUnitFun = true))
+        val repository = CatRepositoryImpl(apiService, mockk(relaxUnitFun = true))
 
         runBlocking {
             repository.getCatData(0)
@@ -90,7 +90,7 @@ class CatRepositoryTest {
         coEvery { apiService.getCats(any(), any()) }.throws(UnknownHostException())
         val catPageDao: CatPageDao = mockk()
         coEvery { catPageDao.loadSingle(0) } returns catPage
-        val repository = CatRepository(apiService, catPageDao)
+        val repository = CatRepositoryImpl(apiService, catPageDao)
 
         runBlocking {
             val data = repository.getCatData(0)
@@ -108,7 +108,7 @@ class CatRepositoryTest {
         coEvery { apiService.getCats(any(), any()) } returns response
         val catPageDao: CatPageDao = mockk(relaxUnitFun = true)
 
-        val repository = CatRepository(apiService, catPageDao)
+        val repository = CatRepositoryImpl(apiService, catPageDao)
 
         runBlocking {
             repository.getCatData(0)

@@ -14,7 +14,9 @@ interface CatProvider {
     suspend fun getCatData(position: Int): CatData?
 }
 
-class CatRepository(private val apiService: CatApiService, private val catPageDao: CatPageDao): CatProvider {
+interface CatRepository: CatProvider
+
+class CatRepositoryImpl(private val apiService: CatApiService, private val catPageDao: CatPageDao): CatRepository {
     companion object {
         const val PAGE_SIZE = 20
         const val ENDLESS_CATS = 300_000 // well, nearly so anyway

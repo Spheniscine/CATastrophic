@@ -16,7 +16,7 @@ data class CatDataPage(
     }
 }
 
-open class CatDataListConverter {
+class CatDataListConverter {
     private val moshi = Moshi.Builder().build()
 
     private val type = Types.newParameterizedType(List::class.java, CatData::class.java)

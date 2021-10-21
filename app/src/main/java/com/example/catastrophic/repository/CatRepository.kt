@@ -7,6 +7,8 @@ import com.example.catastrophic.repository.source.local.AppDatabase
 import com.example.catastrophic.repository.source.local.CatPageDao
 import com.example.catastrophic.repository.source.remote.CatApiService
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 
 interface CatProvider {
@@ -22,37 +24,55 @@ class CatRepositoryImpl(private val apiService: CatApiService, private val catPa
         const val ENDLESS_CATS = 300_000 // well, nearly so anyway
     }
     override val numCats: Int = ENDLESS_CATS
-    private val coroutineScope = MainScope()
 
-    private val pages = List(numCats / PAGE_SIZE) { pageNum ->
-        lazy {
-            coroutineScope.async(context = Dispatchers.IO) {
-                val result = runCatching {
-                    val response = apiService.getCats(PAGE_SIZE, pageNum + 1)
-                    response.errorBody()?.use { body ->
-                        throw ResponseError(body.string())
+    /** helper class to fetch a page of cat data and cache it in memory and in database */
+    private inner class CatPageFetcher(val pageNum: Int) {
+        private var result: List<CatData>? = null
+        private val mutex = Mutex()
+
+        suspend fun get(): List<CatData>? {
+            result?.let { return it }
+            mutex.withLock {
+                result?.let { return it }
+                Dispatchers.IO {
+                    result = run {
+                        // try to fetch from remote source (Cat API)
+                        val res = runCatching {
+                            val response = apiService.getCats(PAGE_SIZE, pageNum + 1)
+                            response.errorBody()?.use { body ->
+                                throw ResponseError(body.string())
+                            }
+                            response.body()!!
+                        }
+
+                        res.onFailure {
+                            Timber.e("error fetching data: $it")
+                        }
+
+                        val apiData = res.getOrNull()
+                        if (apiData != null) {
+                            // remote source fetch successful, cache in database and return
+                            catPageDao.insert(CatDataPage(pageNum, apiData))
+                            apiData
+                        } else {
+                            // remote source fetch failed, try to fetch from local database
+                            catPageDao.loadSingle(pageNum)?.data
+                        }
                     }
-                    response.body()!!
                 }
-
-                result.onFailure {
-                    Timber.e("error fetching data: $it")
-                }
-
-                val apiData = result.getOrNull()
-                if(apiData != null) {
-                    catPageDao.insert(CatDataPage(pageNum, apiData))
-                    apiData
-                } else catPageDao.loadSingle(pageNum)?.data
+                return result
             }
         }
     }
+
+    private val pageFetchers =
+        List(numCats / PAGE_SIZE) { pageNum -> CatPageFetcher(pageNum) }
 
 
     override suspend fun getCatData(position: Int): CatData? {
         val pageNum = position / PAGE_SIZE
 
-        val page = pages[pageNum].value.await()
+        val page = pageFetchers[pageNum].get()
 
         return page?.get(position % PAGE_SIZE)
     }

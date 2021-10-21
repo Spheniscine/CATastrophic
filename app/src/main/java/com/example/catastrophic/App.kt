@@ -17,25 +17,6 @@ import timber.log.Timber
 class App: Application() {
     val app get() = this
 
-    @Suppress("RemoveExplicitTypeArguments")
-    fun appModule(): Module = module {
-        single<App> { app }
-        single<Application> { app }
-        single<Context> { app }
-
-        single<CatApiService> { CatApiService.create() }
-
-        single<AppDatabase> {
-            Room.databaseBuilder(get(), AppDatabase::class.java, "catastrophic")
-                .build()
-        }
-        single<CatPageDao> { get<AppDatabase>().catPageDao() }
-
-        single<CatRepository> { CatRepositoryImpl(get(), get()) }
-
-        viewModel { MainViewModel(get()) }
-    }
-
     override fun onCreate() {
         super.onCreate()
         if(BuildConfig.DEBUG) {
@@ -43,4 +24,23 @@ class App: Application() {
         }
         startKoin { modules(appModule()) }
     }
+}
+
+@Suppress("RemoveExplicitTypeArguments")
+fun App.appModule(): Module = module {
+    single<App> { app }
+    single<Application> { app }
+    single<Context> { app }
+
+    single<CatApiService> { CatApiService.create() }
+
+    single<AppDatabase> {
+        Room.databaseBuilder(get(), AppDatabase::class.java, "catastrophic")
+            .build()
+    }
+    single<CatPageDao> { get<AppDatabase>().catPageDao() }
+
+    single<CatRepository> { CatRepositoryImpl(get(), get()) }
+
+    viewModel { MainViewModel(get()) }
 }

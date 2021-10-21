@@ -38,7 +38,7 @@ class CatRepositoryTest {
         }
     }
 
-    fun testPaging(position: Int, pageNum: Int, indexInPage: Int) {
+    private fun testPaging(position: Int, pageNum: Int, indexInPage: Int) {
         val list = List(pageSize) { i -> CatData(url = "url_$i") }
         val response = Response.success(list)
         val apiService: CatApiService = mockk()

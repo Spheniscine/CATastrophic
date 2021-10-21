@@ -16,21 +16,21 @@ import retrofit2.http.Query
 
 interface CatApiService {
     companion object {
-        private fun retrofit(): Retrofit {
+        private fun retrofit(baseUrl: String): Retrofit {
             val interceptor = HttpLoggingInterceptor()
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
             val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
 
             return Retrofit.Builder()
-                .baseUrl("https://api.thecatapi.com/v1/")
+                .baseUrl(baseUrl)
                 .client(client)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
                 .build()
         }
 
-        fun create(): CatApiService {
-            return retrofit().create(CatApiService::class.java)
+        fun create(baseUrl: String = "https://api.thecatapi.com/v1/"): CatApiService {
+            return retrofit(baseUrl).create(CatApiService::class.java)
         }
     }
 

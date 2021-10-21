@@ -27,7 +27,7 @@ class CatRepositoryImpl(private val apiService: CatApiService, private val catPa
 
     /** helper class to fetch a page of cat data and cache it in memory and in database */
     private inner class CatPageFetcher(val pageNum: Int) {
-        private var result: List<CatData>? = null
+        @Volatile private var result: List<CatData>? = null
         private val mutex = Mutex()
 
         suspend fun get(): List<CatData>? {

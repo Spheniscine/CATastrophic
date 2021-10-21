@@ -42,9 +42,11 @@ class CatPageDaoTest {
     fun `insert and retrieve test`() {
         val page = CatDataPage(0, listOf(CatData(url = "some_url")))
         runBlocking {
-            assertEquals(null, catPageDao.loadSingle(0))
+            assertEquals(null, catPageDao.loadSingle(0),
+                "should return null before insertion")
             catPageDao.insert(page)
-            assertEquals(page, catPageDao.loadSingle(0))
+            assertEquals(page, catPageDao.loadSingle(0),
+                "failed to retrieve page after insertion")
         }
     }
 }

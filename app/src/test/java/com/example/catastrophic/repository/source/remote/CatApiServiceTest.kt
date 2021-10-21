@@ -29,11 +29,13 @@ class CatApiServiceTest {
         val apiService = CatApiService.create(baseUrl.toString())
         runBlocking {
             val response = apiService.getCats(20, 1)
-            assertTrue(response.isSuccessful)
+            assertTrue(response.isSuccessful, "response failed")
 
             val request = server.takeRequest(100, TimeUnit.MILLISECONDS)
-            assertTrue(request!!.path!!.startsWith("/images/search?limit=20&page=1"))
-            assertEquals(BuildConfig.CAT_API_KEY, request.getHeader("x-api-key"))
+            assertTrue(request!!.path!!.startsWith("/images/search?limit=20&page=1"),
+                "request path incorrect")
+            assertEquals(BuildConfig.CAT_API_KEY, request.getHeader("x-api-key"),
+                "CatApi key incorrect")
 
             val body = response.body()
 
@@ -41,7 +43,7 @@ class CatApiServiceTest {
             val type = Types.newParameterizedType(List::class.java, CatData::class.java)
             val adapter = moshi.adapter<List<CatData>>(type)
             val expected = adapter.fromJson(SAMPLE_RESPONSE)
-            assertEquals(expected, body)
+            assertEquals(expected, body, "response body incorrect")
         }
     }
 }

@@ -10,6 +10,7 @@ import com.example.catastrophic.ui.fragment.ImageFragment
 import com.example.catastrophic.utils.transitionId
 import kotlinx.coroutines.CoroutineScope
 
+// Using deprecated pager adapter, as doing the recommended upgrade breaks transitions
 class ImagePagerAdapter(fragment: Fragment, private val catProvider: CatProvider):
     FragmentStatePagerAdapter(fragment.childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 

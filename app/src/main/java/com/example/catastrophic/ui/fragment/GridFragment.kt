@@ -24,8 +24,7 @@ class GridFragment : Fragment() {
     }
 
     private var _binding: FragmentGridBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     private val mainViewModel: MainViewModel by sharedViewModel()
@@ -56,6 +55,10 @@ class GridFragment : Fragment() {
         _binding = null
     }
 
+    /**
+     * Scrolls the recycler view to show the last viewed item in the grid. This is important when
+     * navigating back from the grid.
+     */
     private fun scrollToPosition() {
         binding.recyclerView.addOnLayoutChangeListener(
             object: View.OnLayoutChangeListener {
@@ -88,20 +91,27 @@ class GridFragment : Fragment() {
         )
     }
 
+    /**
+     * Prepares the shared element transition to the pager fragment, as well as the other transitions
+     * that affect the flow.
+     */
     private fun prepareTransitions() {
         val context = context ?: return
         exitTransition = TransitionInflater.from(context)
             .inflateTransition(R.transition.grid_exit_transition)
 
+        // A similar mapping is set at the ImagePagerFragment with a setEnterSharedElementCallback.
         setExitSharedElementCallback(
             object: SharedElementCallback() {
                 override fun onMapSharedElements(
                     names: MutableList<String>,
                     sharedElements: MutableMap<String, View>
                 ) {
+                    // Locate the ViewHolder for the clicked position.
                     val selectedViewHolder = binding.recyclerView
                         .findViewHolderForAdapterPosition(mainViewModel.currentPosition) ?: return
 
+                    // Map the first shared element name to the child ImageView.
                     sharedElements[names[0]] = selectedViewHolder.itemView.findViewById(R.id.item_image)
                 }
             }

@@ -27,12 +27,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 /** A fragment for displying an image. */
 class ImageFragment : Fragment() {
 
-    //var imageUrl = ""
     var position = 0
 
     private var _binding: FragmentImageBinding? = null
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     val catProvider: CatProvider by sharedViewModel<MainViewModel>()
@@ -58,9 +56,10 @@ class ImageFragment : Fragment() {
     ): View {
         _binding = FragmentImageBinding.inflate(inflater, container, false)
 
+        // Just like we do when binding views at the grid, we set the transition name to be the string
+        // value of the image res.
         val args = requireArguments()
         binding.image.transitionName = args.getString(KEY_TRANSITION_ID)!!
-        //imageUrl = args.getString(KEY_IMAGE_URL)!!
         position = args.getInt(KEY_POSITION)
 
         lifecycleScope.launch {

@@ -23,7 +23,8 @@ import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 /** A RecyclerView adapter for displaying a grid of images. */
-class GridAdapter(private val fragment: Fragment, private val mainViewModel: MainViewModel): RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
+class GridAdapter(private val fragment: Fragment, private val mainViewModel: MainViewModel)
+    : RecyclerView.Adapter<GridAdapter.ImageViewHolder>() {
 
     private lateinit var coroutineScope: CoroutineScope
 
@@ -36,6 +37,9 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
         coroutineScope.cancel()
     }
 
+    /**
+     * A listener that is attached to all ViewHolders to handle image loading events and clicks.
+     */
     interface ViewHolderListener {
         fun setupTransition(imageView: ImageView, adapterPosition: Int)
         fun onItemClicked(view: View, imageView: ImageView, adapterPosition: Int)
@@ -85,7 +89,6 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
          * later.
          */
         fun onBind() {
-            //if (adapterPosition >= urls.size) return
             setImage()
             image.transitionName = transitionId(adapterPosition)
         }

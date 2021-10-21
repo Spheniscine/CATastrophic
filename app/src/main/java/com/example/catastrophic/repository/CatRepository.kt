@@ -32,8 +32,8 @@ class CatRepositoryImpl(private val apiService: CatApiService, private val catPa
 
         suspend fun get(): List<CatData>? {
             result?.let { return it }
-            mutex.withLock {
-                result?.let { return it }
+            mutex.withLock { // if result is null, acquire lock...
+                result?.let { return it } // then check if result is available again
                 Dispatchers.IO {
                     result = run {
                         // try to fetch from remote source (Cat API)

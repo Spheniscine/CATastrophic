@@ -23,6 +23,7 @@ class CatRepositoryImpl(private val apiService: CatApiService, private val catPa
     }
     override val numCats: Int = ENDLESS_CATS
     private val coroutineScope = MainScope()
+
     private val pages = List(numCats / PAGE_SIZE) { pageNum ->
         lazy {
             coroutineScope.async(context = Dispatchers.IO) {

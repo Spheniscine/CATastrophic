@@ -66,6 +66,7 @@ dependencies {
     // Koin (dependency injection)
     def koin_version = "3.1.2"
     implementation "io.insert-koin:koin-android:$koin_version"
+    testImplementation "io.insert-koin:koin-test:$koin_version"
 
     // Swipe refresh layout (currently using for CircularProgressDrawable)
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"

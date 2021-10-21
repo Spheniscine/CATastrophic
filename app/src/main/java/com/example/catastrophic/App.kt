@@ -15,8 +15,6 @@ import org.koin.dsl.module
 import timber.log.Timber
 
 class App: Application() {
-    val app get() = this
-
     override fun onCreate() {
         super.onCreate()
         if(BuildConfig.DEBUG) {
@@ -28,6 +26,7 @@ class App: Application() {
 
 @Suppress("RemoveExplicitTypeArguments")
 fun App.appModule(): Module = module {
+    val app = this@appModule
     single<App> { app }
     single<Application> { app }
     single<Context> { app }

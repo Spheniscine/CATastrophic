@@ -67,7 +67,6 @@ class GridAdapter(private val fragment: Fragment, private val mainViewModel: Mai
                 .replace(R.id.container, ImagePagerFragment(), ImagePagerFragment::class.simpleName)
                 .addToBackStack(null)
                 .commit()
-            mainViewModel.resetScaleFactor()
         }
     }
 

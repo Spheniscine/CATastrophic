@@ -5,6 +5,7 @@ import androidx.transition.TransitionInflater
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.SharedElementCallback
@@ -31,6 +32,8 @@ class GridFragment : Fragment() {
 
     private val gridAdapter by lazy { GridAdapter(this, mainViewModel) }
 
+    private var scaleGestureDetector: ScaleGestureDetector? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,6 +51,23 @@ class GridFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scrollToPosition()
+
+        scaleGestureDetector = ScaleGestureDetector(context,
+            object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                override fun onScale(detector: ScaleGestureDetector): Boolean {
+                    mainViewModel.updateScaleFactor(detector.scaleFactor)
+                    return false
+                }
+            })
+
+        binding.recyclerView.setOnTouchListener { _, event ->
+            scaleGestureDetector!!.onTouchEvent(event)
+        }
+
+        mainViewModel.scaleFactorLd.observe(viewLifecycleOwner) { scaleFactor ->
+            binding.root.scaleX = scaleFactor
+            binding.root.scaleY = scaleFactor
+        }
     }
 
     override fun onDestroyView() {

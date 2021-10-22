@@ -66,11 +66,19 @@ class CatRepositoryImpl(private val apiService: CatApiService, private val catPa
     }
 
     private val pageFetchers =
-        List(numCats / PAGE_SIZE) { pageNum -> CatPageFetcher(pageNum) }
-
+        mutableListOf<CatPageFetcher>()
+    private val mutex = Mutex()
 
     override suspend fun getCatData(position: Int): CatData? {
         val pageNum = position / PAGE_SIZE
+
+        if(pageNum >= pageFetchers.size) {
+            mutex.withLock {
+                while(pageNum >= pageFetchers.size) {
+                    pageFetchers.add(CatPageFetcher(pageFetchers.size))
+                }
+            }
+        }
 
         val page = pageFetchers[pageNum].get()
 

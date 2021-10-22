@@ -46,6 +46,7 @@ class CatRepositoryImpl(private val apiService: CatApiService, private val catPa
                         }
 
                         res.onFailure {
+                            if (it is CancellationException) yield()
                             Timber.e("error fetching data: $it")
                         }
 

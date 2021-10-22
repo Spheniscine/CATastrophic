@@ -74,7 +74,7 @@ class GridFragment : Fragment() {
                     oldBottom: Int
                 ) {
                     binding.recyclerView.removeOnLayoutChangeListener(this)
-                    if(!mainViewModel.shouldScroll) return
+                    //if(!mainViewModel.shouldScroll) return
                     val layoutManager = binding.recyclerView.layoutManager ?: return
                     val viewAtPosition = layoutManager.findViewByPosition(mainViewModel.currentPosition)
                     // Scroll to position if the view for the current position is null (not currently part of

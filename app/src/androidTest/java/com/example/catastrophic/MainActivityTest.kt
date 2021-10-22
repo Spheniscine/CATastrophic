@@ -1,5 +1,6 @@
 package com.example.catastrophic
 
+import android.content.pm.ActivityInfo
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -30,12 +31,14 @@ class MainActivityTest {
 
     @Rule
     @JvmField
-    var activityScenarioRule = ActivityScenarioRule<MainActivity>(MainActivity::class.java)
+    var activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
+
+    private fun onActivity(action: (MainActivity) -> Unit) =
+        activityScenarioRule.scenario.onActivity(action)
 
     @Test
     fun recyclerView_isDisplayed() {
-        Espresso.onView(withId(R.id.recycler_view))
-            .check(ViewAssertions.matches(isDisplayed()))
+        Espresso.onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -88,6 +91,25 @@ class MainActivityTest {
         }
 
         Espresso.pressBack()
+
+        Espresso.onView(withId(R.id.recycler_view))
+            .check(matches(withViewAtPosition(OFFSCREEN_POSITION, isDisplayed())))
+    }
+
+    @Test
+    fun offscreen_scroll_is_preserved() {
+        onActivity {
+            it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        Espresso.onView(withId(R.id.recycler_view))
+            .perform(RecyclerViewActions.scrollToPosition<GridAdapter.ImageViewHolder>(
+                OFFSCREEN_POSITION))
+
+        onActivity {
+            it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
 
         Espresso.onView(withId(R.id.recycler_view))
             .check(matches(withViewAtPosition(OFFSCREEN_POSITION, isDisplayed())))

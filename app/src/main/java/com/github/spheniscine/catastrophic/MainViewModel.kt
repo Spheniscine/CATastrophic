@@ -11,4 +11,6 @@ class MainViewModel(private val catRepository: CatRepository) : ViewModel(), Cat
 
     /** whether grid recycler view should scroll */
     var shouldScroll = false
+
+    suspend fun getShareUrl(): String? = catRepository.getCatData(currentPosition)?.url
 }

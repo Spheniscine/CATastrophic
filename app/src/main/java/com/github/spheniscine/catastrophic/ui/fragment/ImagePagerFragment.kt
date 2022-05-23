@@ -1,17 +1,18 @@
 package com.github.spheniscine.catastrophic.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.*
 import androidx.transition.TransitionInflater
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.app.SharedElementCallback
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.github.spheniscine.catastrophic.MainViewModel
 import com.github.spheniscine.catastrophic.R
 import com.github.spheniscine.catastrophic.databinding.FragmentImagePagerBinding
 import com.github.spheniscine.catastrophic.ui.adapter.ImagePagerAdapter
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ImagePagerFragment : Fragment() {
@@ -22,6 +23,11 @@ class ImagePagerFragment : Fragment() {
     private val mainViewModel: MainViewModel by sharedViewModel()
 
     private val adapter by lazy { ImagePagerAdapter(this, mainViewModel) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,5 +88,29 @@ class ImagePagerFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_image_pager, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.share -> {
+                lifecycleScope.launch {
+                    val url = mainViewModel.getShareUrl()
+                    if (url != null) {
+                        val shareIntent = with(Intent(Intent.ACTION_SEND)) {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, url)
+                        }
+                        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_with)))
+                    }
+                }
+
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
